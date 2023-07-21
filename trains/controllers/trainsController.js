@@ -1,19 +1,26 @@
-const { getRealTimeTrainSchedules } = require('../models/trainsModel');
+const axios = require('axios');
 
-function filterAndSortTrains(trains) {
-  // ... (code for filtering and sorting trains as per your requirements)
-}
+async function getTrains(authToken) {
+  const url = 'http://20.244.56.144/train/trains';
+  const headers = {
+    Authorization: `Bearer ${authToken}`,
+  };
 
-async function getTrainSchedules(req, res) {
   try {
-    const trains = await getRealTimeTrainSchedules();
-    const filteredAndSortedTrains = filterAndSortTrains(trains);
-    res.status(200).json(filteredAndSortedTrains);
+    const response = await axios.get(url, { headers });
+    const trainData = response.data;
+    return trainData;
   } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
+    throw new Error('Error fetching train schedules: ' + error.message);
   }
 }
 
+function filterAndSortTrains(trains) {
+  // ... (implementation as provided earlier)
+  // ... (no change in this function)
+}
+
 module.exports = {
-  getTrainSchedules,
+  getTrains,
+  filterAndSortTrains,
 };
